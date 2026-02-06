@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { addComment } from '@/actions/comments';
+import { addComment } from '../actions/comments'; // Changed from '@/actions/comments'
 
 export default function CommentForm() {
   const [username, setUsername] = useState('');
@@ -28,7 +28,6 @@ export default function CommentForm() {
       setSuccess(true);
       setUsername('');
       setText('');
-      // Clear success message after 3 seconds
       setTimeout(() => setSuccess(false), 3000);
     }
 
