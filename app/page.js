@@ -1,5 +1,5 @@
-import ProductCard from '@/components/ProductCard';
-import CommentSection from '@/components/CommentSection';
+import ProductCard from '../components/ProductCard';
+import CommentSection from '../components/CommentSection';
 
 // Products data - server-side
 const products = [
@@ -254,4 +254,5 @@ export default function Home() {
 }
 
 // Add revalidation for incremental static regeneration
+
 export const revalidate = 60; // Revalidate every 60 seconds
