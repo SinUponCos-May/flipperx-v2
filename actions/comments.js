@@ -1,10 +1,26 @@
 'use server';
 
-import { adminDb } from '@/lib/firebase-admin';
-import { Timestamp } from 'firebase-admin/firestore';
-import { revalidatePath } from 'next/cache';
+// Note: We need to fix the firebase-admin import too
+// Let's check if firebase-admin is installed
+const admin = require('firebase-admin');
 
-// Server action to add a comment
+// Initialize if not already initialized
+if (!admin.apps.length) {
+  try {
+    admin.initializeApp({
+      credential: admin.credential.cert({
+        projectId: process.env.FIREBASE_PROJECT_ID,
+        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+        privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+      }),
+    });
+  } catch (error) {
+    console.error('Firebase admin initialization error', error);
+  }
+}
+
+const adminDb = admin.firestore();
+
 export async function addComment(formData) {
   const username = formData.get('username');
   const text = formData.get('text');
@@ -26,12 +42,9 @@ export async function addComment(formData) {
     await adminDb.collection('comments').add({
       username,
       text,
-      timestamp: Timestamp.now(),
+      timestamp: admin.firestore.FieldValue.serverTimestamp(),
     });
 
-    // Revalidate the page to show new comment
-    revalidatePath('/');
-    
     return { success: true };
   } catch (error) {
     console.error('Error adding comment:', error);
@@ -39,7 +52,6 @@ export async function addComment(formData) {
   }
 }
 
-// Server function to get comments (for server-side rendering)
 export async function getComments() {
   try {
     const snapshot = await adminDb
