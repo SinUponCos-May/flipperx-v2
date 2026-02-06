@@ -1,15 +1,13 @@
-import { getComments } from '@/actions/comments';
+import { getComments } from '../actions/comments'; // Changed from '@/actions/comments'
 import CommentForm from './CommentForm';
 
 export default async function CommentSection() {
-  // Fetch comments on the server
   const comments = await getComments();
 
   return (
     <div className="comment-section">
       <h2 className="text-2xl font-bold mb-6">Community Comments</h2>
       
-      {/* Client-side form */}
       <CommentForm />
       
       <div className="comments-list">
